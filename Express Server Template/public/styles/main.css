@@ -1,0 +1,34 @@
+#master{
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+height: 100vh;
+background-color: red;
+}
+
+#heading{
+display: flex;
+background-color: aliceblue;
+}
+
+#main-container{
+display: flex;
+height: 100vh;
+background-color: aqua;
+
+}
+
+#vert-nav{
+    background-color: blueviolet;
+}
+
+#page-content-container{
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    background-color: chocolate;
+    padding-left: 20px;
+}
+
+
+

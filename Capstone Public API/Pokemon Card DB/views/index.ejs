@@ -1,0 +1,20 @@
+<%- include("partials/header.ejs")  %>
+
+<div id="main-container">
+    
+    <div id="page-content-container">
+      <% if(locals.cardCollection){ %>
+
+      <% } %>
+    </div>
+</div>
+
+<% if(locals.cardCollection){ %>
+<script>
+var cardPool = <%= cardCollection %>;
+console.log(cardCollection[0]);
+</script>
+<% } %>
+
+
+<%- include("partials/footer.ejs")  %>
