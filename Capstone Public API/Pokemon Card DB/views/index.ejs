@@ -3,18 +3,38 @@
 <div id="main-container">
     
     <div id="page-content-container">
-      <% if(locals.cardCollection){ %>
+      
+      <% if(locals.randCard && locals.latestSet){ %>
 
+
+        <% setSource = latestSet.logo + ".png"; %>
+        <div class="main-page-display">
+        <div class="main-page-display-inner">
+          <img src=<%= setSource %> alt="">
+        </div>
+        <div>
+          <form action="" method="">
+            <input type="submit" value="Explore Sets">
+          </form>
+        </div>
+        </div>
+
+        <% imgSource = randCard.image + "/high.png";%> 
+        <div class="main-page-display">
+        <div class="main-page-display-inner">
+          <img src=<%= imgSource %> alt="random card image" class=main-page-card>
+        </div>
+        <div>
+          <form action="/card-search" method="GET">
+            <input type="submit" value="Explore Cards">
+          </form>
+        </div>
+      </div>
       <% } %>
     </div>
 </div>
 
-<% if(locals.cardCollection){ %>
-<script>
-var cardPool = <%= cardCollection %>;
-console.log(cardCollection[0]);
-</script>
-<% } %>
+
 
 
 <%- include("partials/footer.ejs")  %>

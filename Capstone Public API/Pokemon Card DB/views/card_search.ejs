@@ -1,5 +1,4 @@
 <%- include("partials/header.ejs")  %>
-
 <div id="main-container">
     
   <div id="query-container">
@@ -11,7 +10,12 @@
       <input type="text" name="id">
 
       <label for="category">Category</label>
-      <input type="text" name="category">
+      <select name="category" id="category">
+        <option value=""></option>
+        <option value="Pokemon">Pokemon</option>
+        <option value="Trainer">Trainer</option>
+        <option value="Energy">Energy</option>
+      </select>
 
       <label for="name">Name</label>
       <input type="text" name="name">
@@ -20,7 +24,20 @@
       <input type="text" name="hp">
 
       <label for="types">Type(s)</label>
-      <input type="text" name="types">
+      <select name="types" id="types">
+        <option value=""></option>
+        <option value="Colorless">Colorless</option>
+        <option value="Dark">Dark</option>
+        <option value="Dragon">Dragon</option>
+        <option value="Electric">Electric</option>
+        <option value="Fairy">Fairy</option>
+        <option value="Fighting">Fighting</option>
+        <option value="Fire">Fire</option>
+        <option value="Grass">Grass</option>
+        <option value="Metal">Metal</option>
+        <option value="Psychic">Psychic</option>
+        <option value="Water">Water</option>
+      </select>
 
       <input type="submit" value="Search">
     </form>
@@ -28,6 +45,13 @@
 
   <div id="page-content-container">
   <%if(locals.searchData){ %>
+      
+      <% var unitPerPage = 10; %>
+      <% var searchResultLength = searchData.length; %>
+      <% var pageCount = Math.ceil(searchResultLength/unitPerPage); %>
+      <% console.log(pageCount); %>
+
+
       <% for(let i = 0; i < searchData.length; i++){ %>
       <div>
         <% let imgStr = searchData[i].image + "/high.png"%>

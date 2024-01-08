@@ -9,7 +9,8 @@ import ejs from "ejs"
 /* --------------------------------------------------------------------------------- */
 const app = express();
 const port = 3000;
-var cardPool = null;
+var fullCardPool = null;
+var fullSetList = null;
 
 /* middleware mounts */
 /* --------------------------------------------------------------------------------- */
@@ -44,17 +45,42 @@ function sampleObj(param1, param2){ /* obj name, parameter entries */
   return fullQuery; /* returns the full query string*/
 }
 
+function getPokemon(cardList,index){
+  return cardList[index];
+}
+
+function hasImage(pokemon) {
+  let imageProp = true;
+  if(pokemon.image == undefined){
+    imageProp = false;
+  }
+  return imageProp;
+}
+
 /* routes */
 /* --------------------------------------------------------------------------------- */
 
 /* initial site load*/
 app.get("/", async (req,res) => {
-  try {         
-    if(cardPool == null){ /* only do load once as this load takes a long time*/
-    const response = await axios.get("https://api.tcgdex.net/v2/en/cards");
-    cardPool = response.data;
+  try { 
+    if(fullCardPool == null){ /* only do load once as this load takes a long time*/  
+    const response = await axios.get("https://api.tcgdex.net/v2/en/cards"); /* gets the entire card database from the api */
+    fullCardPool = response.data; /* loads into a variable called cardPool */ 
+    } /* ends check for if the cardpool is already loaded */
+
+    if(fullSetList == null){ /* only do load once as this load takes a long time*/
+    const response = await axios.get("https://api.tcgdex.net/v2/en/sets"); /* gets the entire card database from the api */
+    fullSetList = response.data; /* loads into a variable called fullSetList */ 
+    } /* ends check for if the fullSetList is already loaded */
+    var rng;
+    var imageFlag = false;
+    var randCard;
+    while(imageFlag == false){
+      rng = Math.floor(Math.random()*fullCardPool.length);
+      randCard = getPokemon(fullCardPool,rng);
+      imageFlag = hasImage(randCard);
     }
-    res.render("index.ejs", { cardCollection: cardPool});
+    res.render("index.ejs", { randCard: randCard, latestSet: fullSetList[fullSetList.length-1]}); /* renders the site with cardPool loaded */
   } catch (error) {
     console.error("Failed to make request:", error.message);
     res.render("index.ejs", {
