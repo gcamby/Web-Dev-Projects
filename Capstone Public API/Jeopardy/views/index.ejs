@@ -1,0 +1,26 @@
+<%- include("partials/header.ejs")  %>
+<div class="heading">
+    <h1>Welcome to the Jeopardy API!</h1>
+    <h2>Practice Your Jeopardy Skills</h2>
+</div>
+    <div class="body">
+        
+    
+    <form action="/random" method="get">
+        <input class="main-page-input" type="submit" value="Random Question">
+    </form>
+
+    <form action="/final">
+        <input class="main-page-input" type="submit" value="Random Final Jeopardy Question">
+    </form>
+
+    <form action="/categories">
+        <input class="main-page-input" type="submit" value="Generate Some Categories">
+    </form>
+
+    <form action="/category">
+        <input class="main-page-input" type="submit" value="Research a Category">
+    </form>
+
+    </div>
+<%- include("partials/footer.ejs")  %>

@@ -1,0 +1,151 @@
+#master{
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+height: auto;
+
+}
+
+#heading{
+display: flex;
+flex-direction: column;
+width: 100vw;
+align-items: center;
+background-image: url("https://static.vecteezy.com/system/resources/previews/010/818/268/original/blue-yellow-diagonal-stripes-pattern-abstract-background-illustration-free-vector.jpg");
+justify-content: flex-end;
+background-position: center;
+height: 300px;
+}
+
+#logo{
+height: 100px;
+height: 100%;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+
+#logo h1{
+    color: whitesmoke;
+    font-family: 'Exo 2', sans-serif;
+
+    text-shadow:
+    1px 1px 0 #000,
+    -1px 1px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000;
+}
+
+#horizontal-nav-bar{
+    height: 50px;
+    width: 100vw;
+    background-color: #005095;
+}
+
+#horizontal-nav-bar ul {
+    display: flex;
+    list-style-type: none;
+    color: whitesmoke;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 30px;
+    margin: 0px;
+}
+
+
+#horizontal-nav-bar ul li{
+    background-color: none;
+}
+
+#horizontal-nav-bar ul li form input{
+    margin-left: 15px;
+    margin-right: 15px;
+    color: whitesmoke;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 30px;
+    background: none;
+    border: none;
+}
+
+
+#main-container{
+display: flex;
+min-height: 100vh;
+height: auto;
+width: 100vw;
+background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://www.rpnation.com/gallery/just-a-pokeball-background.27961/full');
+background-repeat: no-repeat;
+background-position: right;
+
+}
+
+#query-container{
+    background-color: #eccd5b;
+    height: inherit;
+}
+
+#query-container form{
+    display: flex;
+    flex-direction: column;
+}
+
+#query-container form label{
+    font-family: 'Exo 2', sans-serif;
+}
+
+#query-container form input{
+    font-family: 'Exo 2', sans-serif;
+    border-radius: 3px;
+    margin: 5px;
+}
+
+#page-content-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.main-page-display{
+    display: flex;
+    align-items: center;
+    margin: 20px;
+}
+
+.main-page-display-inner{
+    display: flex;
+    justify-content: center;
+    width: 460px;
+}
+
+.main-page-set{
+    margin:  30px;
+}
+
+.main-page-card{
+    border-radius: 10px;
+    margin:  30px;
+    width: 300px;
+    height: 413px;
+
+    animation: fadeIn 2s
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+.main-page-display form input{
+    margin-left: 40px;
+    color: whitesmoke;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 50px;
+    background: none;
+    border: none;
+
+    text-shadow:
+    2px 2px 0 #000,
+    -2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000;
+}
+

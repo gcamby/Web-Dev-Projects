@@ -1,0 +1,44 @@
+<%- include("partials/header.ejs")  %>
+
+<div class="heading">
+    <h1>Random Jeopardy Question</h1>
+</div>
+    <div class="body">
+
+        <div id="question">
+        <h1>Category: <%= question.category.title %></h1>
+        <h1>Value: $<%= question.value %></h1>
+        <h1>Question: <%= question.question %></h1>
+        
+        
+        <button id="button1">Reveal Answer</button>
+        </div>
+
+        <div id="answer" class="hidden">
+        
+            <h1 id="answer-anim-1">Answer:<%= question.answer %></h1>
+            
+            <p id="answer-anim-2"> Air Date: <%= question.airdate.substr(0,9) %></p>
+            
+        </div>
+
+       
+
+
+        
+        
+
+    </div>
+
+<script>
+    // HTML button elements
+const button1 = document.getElementById("button1");
+const answerDiv = document.getElementById("answer")
+// button1 click event listener to apply function
+button1.addEventListener("click", function() {
+    answerDiv.classList.remove("hidden")
+    answerDiv.classList.add("revealed")
+});
+</script>  
+
+<%- include("partials/footer.ejs")  %>

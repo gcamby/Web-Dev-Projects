@@ -1,0 +1,88 @@
+<%- include("partials/header.ejs")  %>
+<div id="main-container">
+    
+  <div id="query-container">
+    <form action="/query" method="POST">
+      <label for="set">Set</label>
+      <input type="text" name="set">
+
+      <label for="id">ID</label>
+      <input type="text" name="id">
+
+      <label for="category">Category</label>
+      <select name="category" id="category">
+        <option value=""></option>
+        <option value="Pokemon">Pokemon</option>
+        <option value="Trainer">Trainer</option>
+        <option value="Energy">Energy</option>
+      </select>
+
+      <label for="name">Name</label>
+      <input type="text" name="name">
+
+      <label for="hp">HP total</label>
+      <input type="text" name="hp">
+
+      <label for="types">Type(s)</label>
+      <select name="types" id="types">
+        <option value=""></option>
+        <option value="Colorless">Colorless</option>
+        <option value="Dark">Dark</option>
+        <option value="Dragon">Dragon</option>
+        <option value="Electric">Electric</option>
+        <option value="Fairy">Fairy</option>
+        <option value="Fighting">Fighting</option>
+        <option value="Fire">Fire</option>
+        <option value="Grass">Grass</option>
+        <option value="Metal">Metal</option>
+        <option value="Psychic">Psychic</option>
+        <option value="Water">Water</option>
+      </select>
+
+      <input type="submit" value="Search">
+    </form>
+  </div>
+
+  <div id="page-content-container">
+  <%if(locals.searchData){ %>
+      
+      <% var unitPerPage = 10; %>
+      <% var searchResultLength = searchData.length; %>
+      <% var pageCount = Math.ceil(searchResultLength/unitPerPage); %>
+      <% console.log(pageCount); %>
+
+
+      <% for(let i = 0; i < searchData.length; i++){ %>
+      <div>
+        <% let imgStr = searchData[i].image + "/high.png"%>
+        <img src=<%=imgStr%> alt="No Image Available " height="150px">
+        <p><%=searchData[i].name%></p>
+        <p><%=searchData[i].id%></p>
+        <form action="/view" method="POST">
+          <input type="hidden" name="cardID" value="<%= searchData[i].id %>">
+          <input type="submit" value="View">
+        </form>
+        <hr>
+      </div>
+      <% } %>
+    
+    <% } %>
+
+    <%if(locals.cardData){ %>
+      <% var imgStr = cardData.image + "/high.png"%>
+      <div>
+        <img src=<%=imgStr%> alt="No Image Available">
+        <p>Name: <%= cardData.name  %></p>
+        <p>Set: <%= cardData.set.name  %></p>
+        <p>Set Entry: <%= cardData.localId  %></p>
+
+
+      </div>
+    <% } %>
+
+
+
+  </div>
+</div>
+
+<%- include("partials/footer.ejs")  %>

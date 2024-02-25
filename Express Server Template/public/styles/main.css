@@ -1,0 +1,59 @@
+html{
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+main {
+padding-top: 60px; /* Add padding to account for the fixed navbar */
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+height: 100vh;
+
+}
+ 
+#navbar {
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    z-index: 1000; /* High z-index to ensure navbar is on top */
+}
+
+#navbar a {
+    color: #fff;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+#main-container {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    background-color: aqua;
+}
+
+#mosaic-section{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    min-width: 600px;
+    max-width: 1800px;
+    background-color: chocolate;
+}
+
+
+

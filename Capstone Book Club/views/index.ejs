@@ -1,0 +1,58 @@
+<%- include("partials/header.ejs")  %>
+
+<div id="main-container">
+    <section>
+      <h2>See What Your Friends are Reading</h2>
+      <p>Find your next potential read...</p>
+      <div id="friend-books">
+        <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+
+        <% for (let i = 0;i<friendBooks.length;i++)  {   %>
+
+          
+          <div class="friend-book-div">
+            
+            <div class="friend-book-friend">
+              <p><%= friendBookFriends[i].user_name%> is reading...</p>
+            </div>
+            <form action="/books" method="post">
+            <input type="hidden" id="<%=friendBooks[i].id%>" name="bookId" value="<%=friendBooks[i].id%>" />
+            <button type="submit">
+            <div class="friend-book-card">
+              <div class="card-image-container">
+                <img src="<%=friendBooks[i].cover_art%>" alt="Card Image" class="card-image">
+              </div>
+              
+              <div class="card-text-container">
+              <h4 class="card-title"><%=friendBooks[i].title%></h4>
+              <p>by</p>
+              <p class="card-author"><%= friendBooks[i].author%></p>
+          </div>
+            </div>
+          </button>  
+           </form> 
+          </div>
+      <% } %>   
+     
+      <button class="next" onclick="moveSlide(1)">&#10095;</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Jump Back In!</h2>
+      <p>Catch up in your recent club activities...</p>
+    </section>
+
+    <section>
+      <h2>Latest Reviews</h2>
+      <p>See what others thought...</p>
+    </section>
+</div>
+
+<div id="user-info">
+  <h3> Welcome </h3>
+  <h3><%= username %></h3>
+</div>
+
+<script src="scripts/carousel.js"></script>
+<%- include("partials/footer.ejs")  %>

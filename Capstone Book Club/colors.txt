@@ -1,0 +1,16 @@
+Color Schemes
+
+Deep Wine Red (#8B2635): This rich, deep red evokes the warmth and depth of a good book.
+It can be used for headings, buttons, and other focal points.
+
+Creamy Beige (#F5F1E3): This soft, warm beige works well as a background color, providing
+a light and airy feel that contrasts nicely with deeper tones.
+
+Midnight Blue (#1B3A57): A deep blue that suggests reliability and depth. It's excellent
+for text or to highlight active menu items.
+
+Soft Gold (#CBA135): This muted gold can add a touch of elegance and highlight important
+features like quotes or keynotes.
+
+Dusty Rose (#D7A9A9): A muted pink that offers a touch of warmth and friendliness, 
+perfect for secondary buttons or highlights.

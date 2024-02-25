@@ -1,0 +1,118 @@
+<%- include("partials/header.ejs")  %>
+
+
+
+
+<div id="main-container">
+    <% if(randCard) {%>
+    <div id="mosaic-section">
+      
+      <div class="card card-quicksearch light-orange">
+        <h2 class="card-title" style="margin: 20px;">Quick Search</h2>
+      </div>
+
+      <div class="card card-card light-blue">
+        <div class="card-image-container">
+        <img class="card-image active">
+        <img class="card-image">
+        <img class="card-image">
+      </div>
+        <div class="card-container-card">
+          <h2 class="card-title">Explore The Card Database</h4>
+          <p class="card-text">The entire Pokemon card collection at your fingertips!</p>
+        </div>
+      </div>
+
+      <div class="card card-set light-green">
+        <div class="card-set-container">
+        <img class="set-image active">
+        <img class="set-image">
+        <img class="set-image">
+      </div>
+        <div class="card-container-set">
+          <h2 class="card-title">Explore Sets</h4>
+          <p class="card-text">Take a dive into the Pokemon TCG history!</p>
+        </div>
+      
+      
+
+    </div>
+</div>
+
+<script>
+
+  var imageCardPoolClient = <%-JSON.stringify(imageCardPool)%>;
+  var fullSetListClient = <%-JSON.stringify(fullSetList)%>;  
+  var cardIndex = 0;
+  var setDec = 2;
+  var setLength = fullSetListClient.length;
+  var setIndex = setLength-setDec;
+
+
+  const cardImage1 = document.getElementsByClassName("card-image")[0];
+  const cardImage2 = document.getElementsByClassName("card-image")[1];
+  const cardImage3 = document.getElementsByClassName("card-image")[2];
+
+  const setImage1 = document.getElementsByClassName("set-image")[0];
+  const setImage2 = document.getElementsByClassName("set-image")[1];
+  const setImage3 = document.getElementsByClassName("set-image")[2];
+  
+  var rng1 = Math.floor(Math.random()*imageCardPoolClient.length);
+  var rng2 = Math.floor(Math.random()*imageCardPoolClient.length);
+  cardImage1.src = imageCardPoolClient[rng1].image + "/high.png";
+  cardImage2.src = imageCardPoolClient[rng2].image + "/high.png";
+  
+  setImage1.src = fullSetListClient[setLength-1].logo + ".png";
+  setImage2.src = fullSetListClient[setLength-2].logo + ".png";
+
+ 
+
+
+
+  setInterval(()=>{
+    rng1 = Math.floor(Math.random()*imageCardPoolClient.length);
+    if(cardIndex % 3 == 0){
+      cardImage3.src = imageCardPoolClient[rng1].image + "/high.png";
+      cardImage1.classList.remove('active');
+      cardImage2.classList.add('active');
+    }
+    if(cardIndex % 3 == 1) {
+      cardImage1.src = imageCardPoolClient[rng1].image + "/high.png";
+      cardImage2.classList.remove('active');
+      cardImage3.classList.add('active');
+    }
+    if(cardIndex % 3 == 2) {
+      cardImage2.src = imageCardPoolClient[rng1].image + "/high.png";
+      cardImage3.classList.remove('active');
+      cardImage1.classList.add('active');
+    }
+    cardIndex++;
+  }, 6000);
+
+  setInterval(()=>{
+    setIndex = fullSetListClient.length-setDec;
+    if(setDec % 3 == 2){
+      setImage3.src = fullSetListClient[setIndex].logo + ".png";
+      setImage1.classList.remove('active');
+      setImage2.classList.add('active');
+    }
+    if(setDec % 3 == 0) {
+      setImage1.src = fullSetListClient[setIndex].logo + ".png";
+      setImage2.classList.remove('active');
+      setImage3.classList.add('active');
+    }
+    if(setDec % 3 == 1) {
+      setImage2.src = fullSetListClient[setIndex].logo + ".png";
+      setImage3.classList.remove('active');
+      setImage1.classList.add('active');
+    }
+setDec++;
+if(setDec > fullSetList.length){
+  setDec = 1;
+}
+  }, 5000);
+
+  </script>
+
+<% } %>
+<%- include("partials/footer.ejs")  %>
