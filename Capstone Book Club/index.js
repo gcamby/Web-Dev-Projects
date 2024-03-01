@@ -6,12 +6,15 @@ import bodyParser from "body-parser"
 import pg from "pg";
 import ejs from "ejs";
 import env from "dotenv";
+import bcrypt from "bcrypt";
+import fs from "fs";
 
 /* Declare App and Constants and Global Variables */
 /* --------------------------------------------------------------------------------- */
 const app = express(); 
 const port = 3000; /* host port */
-var userId = 1; /* temporary variable that keeps track of the user ID */
+let userId = 1; /* temporary variable that keeps track of the user ID */
+const saltRounds = 12;
 env.config();
 
 /* Establish Connection To Database */
@@ -27,31 +30,34 @@ const db = new pg.Client({
 
 /* Middleware Mounting */
 /* --------------------------------------------------------------------------------- */
-app.use(express.static("public")); /* static files go in the "public: folder */
+app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-/* UtilityFunctions */
+/* Utility Functions */
 /* --------------------------------------------------------------------------------- */
 
-async function getUserInfo(user_id){ /* pulls all the user data from the database from the user id*/
-    let result = await db.query("SELECT * FROM users WHERE id=$1", /* gets all the user fields from the entry that matches the input id */
+/* pulls all the user data from the database from the user id*/
+async function getUserInfo(user_id){
+    let result = await db.query("SELECT * FROM users WHERE id=$1",
     [user_id]);
     let user = result.rows[0];
-    return user; /* returns the row data */
+    return user;
 }
 
-async function getUsername(user_id){ /* pulls all the username from the database from the user id*/
-    let result = await db.query("SELECT username FROM users WHERE id=$1", /* just gets the username from the entry that matches the input id*/
+/* pulls the username from the database from the user id*/
+async function getUsername(user_id){ 
+    let result = await db.query("SELECT username FROM users WHERE id=$1", 
     [user_id]);
     let user = result.rows[0];
-    return user; /* returns the row data */
+    return user; 
 }
 
+/* gets all the book fields from the entry that matches the input id */
 async function getBookData(book_id){
-    let result = await db.query("SELECT * FROM books WHERE id=$1", /* gets all the book fields from the entry that matches the input id */
+    let result = await db.query("SELECT * FROM books WHERE id=$1",
     [book_id]);
     let book = result.rows[0];
-    return book;/* returns the row data */
+    return book;
 }
 
 async function getFriends(user_id){
@@ -110,28 +116,87 @@ function getFriendIds(friends){
     return friendIds;
 }
 
-
-/* Post Objects Constructor */
-/* --------------------------------------------------------------------------------- */
-function sampleObj (param1, param2){ /* obj name, parameter entries */
-    this.param1 = param1;
-    this.param2 = param2; 
-}
-
 /* Routes */
 /* --------------------------------------------------------------------------------- */
 app.get("/", async (req,res) => {
-    let user = await getUserInfo(userId);
+    /* let user = await getUserInfo(userId);
     let username = user.user_name;
     let friends = await getFriends(userId);
     let friendIds = getFriendIds(friends);
     let friendBookFriends = await getFriendBookFriends(friendIds);
 
-    let friendBooks = await getFriendBooks(friendIds);
-    /* console.log(friendBookFriends); */
-    /* console.log(friendBooks); */
+    res.render("index.ejs", {username:  username, friendBookFriends: friendBookFriends,friendBooks: friendBooks}); */ 
+    res.redirect("/home");
+})
 
-    res.render("index.ejs", {username:  username, friendBookFriends: friendBookFriends,friendBooks: friendBooks}); 
+app.get("/home", async (req,res) =>{
+    res.render("home.ejs");
+})
+
+app.get("/login", async (req,res) =>{
+    res.render("login.ejs");
+})
+
+app.post("/login", async (req,res) =>{
+    const checkEmail = req.body["email"]; 
+    const checkPassword = req.body["password"];
+  try{
+    let loginRequest = await db.query("SELECT * FROM users WHERE email = $1",
+    [checkEmail]);
+    let loginInfo = loginRequest.rows;
+    console.log(loginInfo);
+    bcrypt.compare(checkPassword,loginInfo[0].password, (err,result) => {
+      if(err){
+        console.log("There was an error:", err);
+      } else {
+        console.log(result);
+        if(result){
+          console.log("you got the password right");//succes action
+        } else {
+          res.send("The Password was Incorrect");//fail action
+        }
+      }
+    });
+
+  } catch(err) {
+    console.log("There was an error with the login:",err);
+  }
+})
+
+app.get("/register", async (req,res) =>{
+    res.render("register.ejs");
+})
+
+app.post("/register", async (req,res) =>{
+    const firstName = req.body["first_name"];
+    const lastName = req.body["last_name"];
+    const username = req.body["username"];
+    const email = req.body["email"]; 
+    const password = req.body["password"];
+    const confirmPassword = req.body["password"];
+  try{
+    const checkResult = await db.query("SELECT * from users WHERE user_name=$1",
+    ["username"]);
+  
+    if (checkResult.rows.length > 0){
+      res.send("Email already exists, try loggin in.");
+    } else {
+        if(password == confirmPassword){
+            bcrypt.hash(password, saltRounds, async (err,hash) => {
+                if (err){
+                  console.log("error:", err);
+                } else {
+                  db.query("INSERT INTO users (first_name, last_name, user_name, email, password) VALUES ($1, $2, $3, $4, $5)",
+                  [firstName, lastName, username, email, hash]);
+                }
+              })
+            } else {
+            res.send("Confirmed Password and Password do not match.");
+        }
+    }
+  } catch (err) {
+    console.log(err);
+  }
 })
 
 app.post("/books", async (req,res) => {

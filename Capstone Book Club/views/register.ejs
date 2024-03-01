@@ -1,0 +1,23 @@
+<%- include("partials/header.ejs")  %>
+<div class="center">
+    <div id="register-shell">
+        <a href="/home"><h1> BookNote </h1></a>
+        <form action="/register" method="Post">
+            <label for="first_name">first Name</label>
+            <input type="text" name="first_name" id="">
+            <label for="last_name">last name</label>
+            <input type="text" name="last_name" id="">
+            <label for="username">username</label>
+            <input type="text" name="username" id="">
+            <label for="email">email</label>
+            <input type="text" name="email" id="">
+            <label for="password">password</label>
+            <input type="password" name="password" id="">
+            <label for="confirm_password">confirm password</label>
+            <input type="password" name="confirm_password" id="">
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</div>
+
+<%- include("partials/header.ejs")  %>

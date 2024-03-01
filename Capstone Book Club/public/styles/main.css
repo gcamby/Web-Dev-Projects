@@ -1,28 +1,28 @@
+/* html, body and main */
+/* --------------------------------------------------------------------------------- */
 html{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
     scroll-behavior: smooth;
 }
 
 body {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
     min-height: 100vh; 
 }
 
 main {
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-min-height: 100vh;
-}
- 
-body, html {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
 }
 
+/* Navbar and Family*/
+/* --------------------------------------------------------------------------------- */
 #navbar {
     position: fixed;
     top: 0;
@@ -53,6 +53,11 @@ body, html {
     font-family: 'IBM Plex Sans', sans-serif;
 }
 
+#navbar ul li a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
 #cherry-tree-div1{
     height: 700px;
     width: 150px;
@@ -75,6 +80,137 @@ body, html {
     min-height: 370px;
 }
 
+
+.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #F5F1E3;
+}
+
+/* Home Page*/
+/* --------------------------------------------------------------------------------- */
+#home-shell{
+      display: flex;
+      flex-direction: column;
+}
+
+.button-container{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.button-container button{
+    font-size: 24px;
+    background-color: #8B2635;
+    border-radius: 5px;
+    color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+.button-container button:hover{
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+#home-shell h1{
+    color: black;
+    font-size: 68px;
+}
+
+/* Login Page*/
+/* --------------------------------------------------------------------------------- */
+#login-shell a{
+    text-decoration: none
+}
+
+#login-shell form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#login-shell h1{
+    color: black;
+    font-size: 68px;
+    margin-bottom: 10px;
+    height: 100px;
+}
+
+#login-shell form button{
+    background-color: #8B2635;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 24px;
+    color: white;
+    width: fit-content;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#login-shell form label{
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 24px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#login-shell form input{
+    width: 100%;
+    height: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* Register Page */
+/* --------------------------------------------------------------------------------- */
+#register-shell a{
+    text-decoration: none
+}
+
+#register-shell form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#register-shell h1{
+    color: black;
+    font-size: 68px;
+    margin-bottom: 10px;
+    height: 100px;
+}
+
+#register-shell form button{
+    background-color: #8B2635;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 24px;
+    color: white;
+    width: fit-content;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#register-shell form label{
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 24px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#register-shell form input{
+    width: 100%;
+    height: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* User Info Box */
+/* --------------------------------------------------------------------------------- */
 #user-info{
     position: fixed;
     right: 0;
@@ -85,11 +221,15 @@ body, html {
     color: white;
 }
 
-#navbar ul li a:hover {
-    background-color: #ddd;
-    color: black;
+#user-info h2{
+    font-family: 'IBM Plex Sans', sans-serif;
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 0px;
 }
 
+/* Main Container*/
+/* --------------------------------------------------------------------------------- */
 #main-container {
     min-height: 100vh;
     display: flex;
@@ -100,6 +240,8 @@ body, html {
     padding: 30px;
 }
 
+/* Friend Books Section*/
+/* --------------------------------------------------------------------------------- */
 #friend-books{
     position: relative;
     margin: auto;
@@ -128,8 +270,6 @@ body, html {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     transition: 0.3s;
   }
-
-
 
   .prev:hover, .next:hover {
     background-color: rgba(0,0,0,0.8);
@@ -214,13 +354,6 @@ h1{
 
 h2{
     font-family: 'IBM Plex Sans', sans-serif;
-}
-
-h3{
-    font-family: 'IBM Plex Sans', sans-serif;
-    margin-left: 20px;
-    margin-top: 10px;
-    margin-bottom: 0px;
 }
 
 h4{

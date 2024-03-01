@@ -9,10 +9,16 @@ CREATE TABLE users (
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
 first_name VARCHAR(100),
 last_name VARCHAR(100),
-user_name VARCHAR(100),
 email VARCHAR(150),
+user_name VARCHAR(100),
+password VARCHAR(200),
 date_joined DATE
 );
+
+CREATE TABLE profile_images (
+user_id INTEGER REFERENCES users(id),
+profile_image BLOB
+); 
 
 CREATE TABLE books (
 id SERIAL PRIMARY KEY UNIQUE NOT NULL,
