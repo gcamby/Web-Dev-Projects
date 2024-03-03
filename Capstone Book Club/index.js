@@ -8,6 +8,9 @@ import ejs from "ejs";
 import env from "dotenv";
 import bcrypt from "bcrypt";
 import fs from "fs";
+import session from "express-session";
+import passport from "passport";
+import { Strategy } from "passport-local";
 
 /* Declare App and Constants and Global Variables */
 /* --------------------------------------------------------------------------------- */
@@ -32,9 +35,33 @@ const db = new pg.Client({
 /* --------------------------------------------------------------------------------- */
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 1000 *60 *60 *24,
+    },
+})
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
 
 /* Utility Functions */
 /* --------------------------------------------------------------------------------- */
+
+/* gets current date*/
+function getCurrentDate() {
+  const today = new Date();
+  const date = today.getFullYear()+'-'+(today.getMonth()+1).toString().padStart(2, '0')+'-'+today.getDate().toString().padStart(2, '0');
+  return date;
+}
 
 /* pulls all the user data from the database from the user id*/
 async function getUserInfo(user_id){
@@ -67,7 +94,7 @@ async function getFriends(user_id){
     result.rows.forEach((friend) => {
         friendIds.push(friend.user2_id); /* populates the friend ids into an array rather than row data */
       });
-    let friendData = await db.query("SELECT id,user_name,first_name,last_name,date_joined FROM users WHERE id= ANY($1)", /* gets all the listed fields from the entries that matches the ids in the input array */
+    let friendData = await db.query("SELECT id,username,first_name,last_name,date_joined FROM users WHERE id= ANY($1)", /* gets all the listed fields from the entries that matches the ids in the input array */
     [friendIds]);
     return friendData.rows; /* returns the row data */
 }
@@ -119,14 +146,11 @@ function getFriendIds(friends){
 /* Routes */
 /* --------------------------------------------------------------------------------- */
 app.get("/", async (req,res) => {
-    /* let user = await getUserInfo(userId);
-    let username = user.user_name;
-    let friends = await getFriends(userId);
-    let friendIds = getFriendIds(friends);
-    let friendBookFriends = await getFriendBookFriends(friendIds);
-
-    res.render("index.ejs", {username:  username, friendBookFriends: friendBookFriends,friendBooks: friendBooks}); */ 
-    res.redirect("/home");
+    if(req.isAuthenticated()){
+        res.render("index.ejs");
+    } else {
+        res.redirect("/home");
+    }
 })
 
 app.get("/home", async (req,res) =>{
@@ -137,31 +161,13 @@ app.get("/login", async (req,res) =>{
     res.render("login.ejs");
 })
 
-app.post("/login", async (req,res) =>{
-    const checkEmail = req.body["email"]; 
-    const checkPassword = req.body["password"];
-  try{
-    let loginRequest = await db.query("SELECT * FROM users WHERE email = $1",
-    [checkEmail]);
-    let loginInfo = loginRequest.rows;
-    console.log(loginInfo);
-    bcrypt.compare(checkPassword,loginInfo[0].password, (err,result) => {
-      if(err){
-        console.log("There was an error:", err);
-      } else {
-        console.log(result);
-        if(result){
-          console.log("you got the password right");//succes action
-        } else {
-          res.send("The Password was Incorrect");//fail action
-        }
-      }
-    });
-
-  } catch(err) {
-    console.log("There was an error with the login:",err);
-  }
-})
+app.post(
+    "/login",
+    passport.authenticate("local", {
+      successRedirect: "/",
+      failureRedirect: "/home",
+    })
+  );
 
 app.get("/register", async (req,res) =>{
     res.render("register.ejs");
@@ -172,11 +178,12 @@ app.post("/register", async (req,res) =>{
     const lastName = req.body["last_name"];
     const username = req.body["username"];
     const email = req.body["email"]; 
+    const dateJoined = getCurrentDate();
     const password = req.body["password"];
-    const confirmPassword = req.body["password"];
+    const confirmPassword = req.body["confirm_password"];
   try{
-    const checkResult = await db.query("SELECT * from users WHERE user_name=$1",
-    ["username"]);
+    const checkResult = await db.query("SELECT * from users WHERE email=$1",
+    [email]);
   
     if (checkResult.rows.length > 0){
       res.send("Email already exists, try loggin in.");
@@ -186,8 +193,13 @@ app.post("/register", async (req,res) =>{
                 if (err){
                   console.log("error:", err);
                 } else {
-                  db.query("INSERT INTO users (first_name, last_name, user_name, email, password) VALUES ($1, $2, $3, $4, $5)",
-                  [firstName, lastName, username, email, hash]);
+                  const result = await db.query("INSERT INTO users (first_name, last_name, username, email, date_joined, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+                  [firstName, lastName, username, email, dateJoined, hash]);
+                  const user = result.rows[0];
+                  req.login(user, (err) =>{
+                    console.log(err);
+                    res.redirect("/");
+                  });
                 }
               })
             } else {
@@ -205,6 +217,48 @@ app.post("/books", async (req,res) => {
     console.log(bookData);
     res.render("book_info.ejs", {title: bookData.title, author: bookData.author, coverArt: bookData.cover_art, summary: bookData.summary});
 })
+
+/* Strategies */
+/* --------------------------------------------------------------------------------- */
+passport.use(
+    new Strategy(async function verify(username, password, cb) {
+      try {
+        const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
+          username,
+        ]);
+        if (result.rows.length > 0) {
+          const user = result.rows[0];
+          const storedHashedPassword = user.password;
+          bcrypt.compare(password, storedHashedPassword, (err, valid) => {
+            if (err) {
+              //Error with password check
+              console.error("Error comparing passwords:", err);
+              return cb(err);
+            } else {
+              if (valid) {
+                //Passed password check
+                return cb(null, user);
+              } else {
+                //Did not pass password check
+                return cb(null, false);
+              }
+            }
+          });
+        } else {
+          return cb("User not found");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })
+  );
+  
+  passport.serializeUser((user, cb) => {
+    cb(null, user);
+  });
+  passport.deserializeUser((user, cb) => {
+    cb(null, user);
+  });
 
 /* Listening */
 /* --------------------------------------------------------------------------------- */
