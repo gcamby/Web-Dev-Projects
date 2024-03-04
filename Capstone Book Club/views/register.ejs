@@ -2,22 +2,45 @@
 <div class="center">
     <div id="register-shell">
         <a href="/home"><h1> BookNote </h1></a>
+        
+        <% if(locals.formData && locals.errorMessage){ %>
         <form action="/register" method="Post">
             <label for="first_name">first Name</label>
-            <input type="text" name="first_name" id="">
+            <input type="text" name="first_name" id="" value=<%=formData.first_name%>>
             <label for="last_name">last name</label>
-            <input type="text" name="last_name" id="">
+            <input type="text" name="last_name" id="" value=<%=formData.last_name%>>
             <label for="username">username</label>
-            <input type="text" name="username" id="">
+            <input type="text" name="username" id="" value=<%=formData.username%>>
             <label for="email">email</label>
-            <input type="text" name="email" id="">
+            <input type="text" name="email" id="" value=<%=formData.email%>>
             <label for="password">password</label>
             <input type="password" name="password" id="">
             <label for="confirm_password">confirm password</label>
             <input type="password" name="confirm_password" id="">
-            <button type="submit">Register</button>
+            <button type="submit" class="submit">Register</button>
         </form>
+        <div>
+            <p><%= errorMessage %></p>
+        </div>
+        <%} else { %>
+            <form action="/register" method="Post">
+                <label for="first_name">first Name</label>
+                <input type="text" name="first_name" id="">
+                <label for="last_name">last name</label>
+                <input type="text" name="last_name" id="">
+                <label for="username">username</label>
+                <input type="text" name="username" id="">
+                <label for="email">email</label>
+                <input type="text" name="email" id="">
+                <label for="password">password</label>
+                <input type="password" name="password" id="">
+                <label for="confirm_password">confirm password</label>
+                <input type="password" name="confirm_password" id="">
+                <button type="submit" class="submit">Register</button>
+            </form>
+        <% } %>
     </div>
 </div>
 
-<%- include("partials/header.ejs")  %>
+<%- include("partials/footer.ejs")  %>
+

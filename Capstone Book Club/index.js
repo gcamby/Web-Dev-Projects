@@ -153,6 +153,10 @@ app.get("/", async (req,res) => {
     }
 })
 
+app.get('/update-content', (req, res) => {
+  res.json({ message: 'This is the updated content!' });
+});
+
 app.get("/home", async (req,res) =>{
     res.render("home.ejs");
 })
@@ -165,7 +169,7 @@ app.post(
     "/login",
     passport.authenticate("local", {
       successRedirect: "/",
-      failureRedirect: "/home",
+      failureRedirect: "/login",
     })
   );
 
@@ -186,7 +190,7 @@ app.post("/register", async (req,res) =>{
     [email]);
   
     if (checkResult.rows.length > 0){
-      res.send("Email already exists, try loggin in.");
+      res.render("register.ejs", {formData: req.body, errorMessage: "This email is already in use! Try logging in."});
     } else {
         if(password == confirmPassword){
             bcrypt.hash(password, saltRounds, async (err,hash) => {
@@ -203,7 +207,7 @@ app.post("/register", async (req,res) =>{
                 }
               })
             } else {
-            res.send("Confirmed Password and Password do not match.");
+              res.render("register.ejs", {formData: req.body, errorMessage: "Confirmed Password and Password do not match."});
         }
     }
   } catch (err) {

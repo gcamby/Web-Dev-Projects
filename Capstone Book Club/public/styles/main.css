@@ -166,6 +166,10 @@ main {
 
 /* Register Page */
 /* --------------------------------------------------------------------------------- */
+#register-shell{
+    width: 400px;
+}
+
 #register-shell a{
     text-decoration: none
 }
