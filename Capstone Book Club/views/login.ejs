@@ -2,6 +2,17 @@
 <div class="center">
     <div id="login-shell">
         <a href="/home"><h1> BookNote </h1></a>
+
+        <% if(locals.query.username ){ %>
+        <form action="/login" method="POST">
+            <label for="username">email</label>
+            <input type="text" name="username" id="username" value=<%=query.username%>>
+            <label for="password">password</label>
+            <input type="password" name="password" id="password">
+            <button type="submit">Login</button>
+            <p> <%= message %> </p>
+        </form>
+        <% } else {%>
         <form action="/login" method="POST">
             <label for="username">email</label>
             <input type="text" name="username" id="username">
@@ -9,8 +20,10 @@
             <input type="password" name="password" id="password">
             <button type="submit">Login</button>
         </form>
-    </div>
+        <% } %>
     
+    </div>
 </div>
+
 
 <%- include("partials/header.ejs")  %>

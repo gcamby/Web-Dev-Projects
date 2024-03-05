@@ -153,25 +153,32 @@ app.get("/", async (req,res) => {
     }
 })
 
-app.get('/update-content', (req, res) => {
-  res.json({ message: 'This is the updated content!' });
-});
-
 app.get("/home", async (req,res) =>{
     res.render("home.ejs");
 })
 
-app.get("/login", async (req,res) =>{
-    res.render("login.ejs");
-})
+//currently troubleshooting this code...
+app.get('/login', (req, res) => {
+  if(req.query.failed == "true"){
+    res.render('login.ejs', { query: req.query, message: "password is incorrect" });
+  } else {
+    res.render('login.ejs', { query: req.query });
+  }
+});
 
-app.post(
-    "/login",
-    passport.authenticate("local", {
-      successRedirect: "/",
-      failureRedirect: "/login",
-    })
-  );
+app.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) { return next(err); }
+    if (!user) {
+      // Include the submitted username in the redirect
+      return res.redirect(`/login?failed=true&username=${encodeURIComponent(req.body.username)}`);
+    }
+    req.logIn(user, (err) => {
+      if (err) { return next(err); }
+      return res.redirect('/');
+    });
+  })(req, res, next);
+});
 
 app.get("/register", async (req,res) =>{
     res.render("register.ejs");
