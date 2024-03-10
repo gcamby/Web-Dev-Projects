@@ -11,6 +11,7 @@ first_name VARCHAR(100),
 last_name VARCHAR(100),
 username VARCHAR(100),
 email VARCHAR(150),
+profile_pic VARCHAR(300),
 date_joined DATE,
 password VARCHAR(200)
 );

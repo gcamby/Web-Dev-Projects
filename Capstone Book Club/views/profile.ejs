@@ -1,0 +1,22 @@
+<%- include("partials/header.ejs")  %>
+<%- include("partials/navbar.ejs")  %>
+<div id="main-container">
+    <div id="profile-container">
+        <dir id="profile-image-container">
+            <img src='<%= user.profile_pic %>' alt="" id="profile-image">
+
+            <form action="/profile-update" method="post" enctype="multipart/form-data">
+                <% let filepath = "./public/profile_images/" + user.email + ".jpg" %>
+                <input type="hidden" name="filepath" value=<%= filepath %>>
+                <input type="hidden" name="email" value=<%= user.email%>>
+                <input type="file" name="file" id="file"/>
+                <input type="submit" name="" id="">
+            </form>
+        </dir>
+        
+    </div>
+
+
+    
+</div>
+<%- include("partials/footer.ejs")  %>

@@ -4,20 +4,21 @@ import express from "express";
 import axios from "axios";
 import bodyParser from "body-parser"
 import pg from "pg";
-import ejs from "ejs";
 import env from "dotenv";
 import bcrypt from "bcrypt";
-import fs from "fs";
+import multer from "multer"
+import path from "path";
 import session from "express-session";
 import passport from "passport";
 import { Strategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth2";
+import fs from "fs";
+import { profile } from "console";
 
 /* Declare App and Constants and Global Variables */
 /* --------------------------------------------------------------------------------- */
 const app = express(); 
 const port = 3000; /* host port */
-let userId = 1; /* temporary variable that keeps track of the user ID */
 const saltRounds = 12;
 env.config();
 
@@ -35,6 +36,20 @@ const db = new pg.Client({
 /* Middleware Mounting */
 /* --------------------------------------------------------------------------------- */
 app.use(express.static("public"));
+
+// Configure multer storage
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, './public/data/uploads') // Specify the directory to save uploaded files
+  },
+  filename: function(req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -53,6 +68,9 @@ app.use((req, res, next) => {
   res.locals.user = req.user || null;
   next();
 });
+
+
+
 
 /* Utility Functions */
 /* --------------------------------------------------------------------------------- */
@@ -158,7 +176,6 @@ app.get("/home", async (req,res) =>{
     res.render("home.ejs");
 })
 
-//currently troubleshooting this code...
 app.get('/login', (req, res) => {
   if(req.query.failed == "true"){
     res.render('login.ejs', { query: req.query, message: "password is incorrect" });
@@ -189,7 +206,8 @@ app.post("/register", async (req,res) =>{
     const firstName = req.body["first_name"];
     const lastName = req.body["last_name"];
     const username = req.body["username"];
-    const email = req.body["email"]; 
+    const email = req.body["email"];
+    const profilePic = "/profile_images/default.jpg" 
     const dateJoined = getCurrentDate();
     const password = req.body["password"];
     const confirmPassword = req.body["confirm_password"];
@@ -205,8 +223,8 @@ app.post("/register", async (req,res) =>{
                 if (err){
                   console.log("error:", err);
                 } else {
-                  const result = await db.query("INSERT INTO users (first_name, last_name, username, email, date_joined, password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-                  [firstName, lastName, username, email, dateJoined, hash]);
+                  const result = await db.query("INSERT INTO users (first_name, last_name, username, email, profile_pic, date_joined, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+                  [firstName, lastName, username, email, profilePic, dateJoined, hash]);
                   const user = result.rows[0];
                   req.login(user, (err) =>{
                     console.log(err);
@@ -238,12 +256,53 @@ app.get(
   })
 );
 
+app.get("/logout", (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    } 
+    res.redirect("/");
+  });
+});
+
 app.post("/books", async (req,res) => {
     let bookId = req.body["bookId"];
     let bookData = await getBookData(bookId);
     console.log(bookData);
     res.render("book_info.ejs", {title: bookData.title, author: bookData.author, coverArt: bookData.cover_art, summary: bookData.summary});
 })
+
+app.get("/profile", async (req,res) => {
+  res.render("profile.ejs");
+})
+
+app.post('/profile-update', upload.single('file'), async (req, res) => {
+  // The image is available in req.file.buffer
+   const result = await db.query("SELECT profile_pic FROM users WHERE email = $1", [
+    req.body.email
+  ]);
+  const oldPath = result.rows[0].profile_pic;
+
+  console.log(oldPath);
+
+  const newPath = req.file.path.substring(7);
+  if(oldPath == "/profile_images/default.jpg" ){
+    db.query("UPDATE users SET profile_pic=$1 WHERE email=$2", [
+      newPath,req.body.email
+    ]);
+  } else {
+    fs.unlink("public/"+oldPath, (err) => {
+      if (err) {
+        console.error('Failed to delete file:', err);
+      }
+      db.query("UPDATE users SET profile_pic=$1 WHERE email=$2", [
+        newPath,req.body.email
+      ]);
+    });
+  }
+  req.user.profile_pic = newPath;
+  res.render("profile.ejs");
+});
 
 /* Strategies */
 /* --------------------------------------------------------------------------------- */
